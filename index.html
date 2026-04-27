@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Long Dien - Tong Quan 360</title>
+  <style>
+    :root {
+      --panel-bg: rgba(10, 24, 36, 0.58);
+      --panel-border: rgba(255, 255, 255, 0.28);
+      --text-main: #f4f7fa;
+      --text-muted: #c9d7e2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background: #0c1a26;
+    }
+
+    .tour {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text-main);
+    }
+
+    .zone-s1-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+      z-index: 6;
+    }
+
+    .zone-s1-overlay.active {
+      opacity: 1;
+    }
+
+    .maunha-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: none;
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    .maunha-overlay.active {
+      display: block;
+    }
+
+    .maunha-background {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .maunha-shade {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .maunha-panel {
+      position: absolute;
+      top: 18%;
+      width: 15.2%;
+      min-width: 188px;
+      border-radius: 18px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.16);
+      z-index: 3;
+    }
+
+    .maunha-panel.left {
+      left: 1.2%;
+      background: linear-gradient(180deg, #f4cc83 0%, #eeb95f 100%);
+      border: 1px solid rgba(120, 75, 24, 0.28);
+    }
+
+    .maunha-panel.right {
+      right: 1.2%;
+      background: linear-gradient(180deg, #f4ead5 0%, #f6f0e2 100%);
+      border: 1px solid rgba(160, 133, 90, 0.15);
+    }
+
+    .maunha-panel-header {
+      position: relative;
+      padding: 20px 20px 8px;
+      text-align: center;
+      font-family: "Times New Roman", serif;
+      color: #8a5a27;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .maunha-panel-close {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      border: 0;
+      background: transparent;
+      color: #8a5a27;
+      font-size: 34px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .maunha-panel-body {
+      padding: 8px 16px 18px;
+    }
+
+    .maunha-option {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      margin: 0 0 12px;
+      font-family: "Times New Roman", serif;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .maunha-option:active {
+      transform: translateY(1px);
+    }
+
+    .maunha-option.left-option {
+      background: #8b5a2b;
+      color: #fff8ea;
+    }
+
+    .maunha-option.left-option.active {
+      background: #ffffff;
+      color: #8b5a2b;
+    }
+
+    .maunha-option.right-option {
+      background: #8b5a2b;
+      color: #fff8ea;
+    }
+
+    .maunha-option.right-option.active {
+      background: #b7772b;
+      color: #fff8ea;
+    }
+
+    .maunha-center {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .maunha-hero {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      border: 0;
+      box-shadow: none;
+      background-color: transparent;
+      background-image: none;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .maunha-float-note {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 4;
+      pointer-events: auto;
+    }
+
+    .maunha-chip {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-family: "Times New Roman", serif;
+      font-size: 16px;
+      font-weight: 700;
+      background: linear-gradient(180deg, #f3c46e 0%, #d9902a 100%);
+      color: #fff8e7;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+    }
+
+    .maunha-chip.active {
+      background: linear-gradient(180deg, #8f5928 0%, #6d4117 100%);
+    }
+
+    /* ── Mặt bằng lightbox ── */
+    .matbang-lightbox {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+    }
+
+    .matbang-lightbox.active {
+      display: flex;
+    }
+
+    .matbang-box {
+      position: relative;
+      max-width: 82vw;
+      max-height: 80vh;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      background: #fff;
+    }
+
+    .matbang-box img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    .matbang-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(139, 90, 43, 0.85);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    @media (max-width: 860px) {
+      .maunha-panel {
+        top: 16%;
+        width: 38vw;
+        min-width: 0;
+      }
+
+      .maunha-panel.left {
+        left: 8px;
+      }
+
+      .maunha-panel.right {
+        right: 8px;
+      }
+
+      .maunha-center {
+        left: 10px;
+        right: 10px;
+        top: 10%;
+      }
+    }
+
+    .zone-s1-map {
+      position: absolute;
+      left: 35.6%;
+      top: 41%;
+      width: 14%;
+      height: 24%;
+      background-repeat: no-repeat;
+      background-size: 300% 400%;
+      background-position: 0% 0%;
+      display: block;
+    }
+
+    .zone-s1-info {
+      position: absolute;
+      left: 17%;
+      top: 13%;
+      width: 54%;
+      height: 20%;
+      background-repeat: no-repeat;
+      background-size: 300% 400%;
+      background-position: 0% 0%;
+      display: block;
+    }
+
+    .viewer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .viewer.dragging {
+      cursor: grabbing;
+    }
+
+    .viewer img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #frame2 {
+      opacity: 0;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      right: 20px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      padding: 10px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1px solid var(--panel-border);
+      background: rgba(255, 255, 255, 0.16);
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .scene-chip {
+      width: 100%;
+      text-align: left;
+      margin-top: 8px;
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #dbe7f5;
+      cursor: pointer;
+    }
+
+    .scene-chip.active {
+      border-color: rgba(255, 255, 255, 0.62);
+      background: rgba(137, 211, 255, 0.24);
+    }
+
+    .hint {
+      position: absolute;
+      left: 50%;
+      top: 16px;
+      transform: translateX(-50%);
+      color: #e8f0fe;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      z-index: 4;
+    }
+
+    .gold-nav {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: min(980px, calc(100vw - 24px));
+      z-index: 4;
+      background: linear-gradient(180deg, #b8772f 0%, #a66b28 100%);
+      border-radius: 34px;
+      border: 1px solid rgba(255, 222, 160, 0.35);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+    }
+
+    .gold-brand {
+      flex: 0 0 auto;
+      min-width: 176px;
+      border-radius: 26px;
+      background: rgba(87, 43, 13, 0.38);
+      color: #ffe39b;
+      padding: 8px 12px;
+      line-height: 1.1;
+    }
+
+    .gold-brand strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .gold-brand span {
+      display: block;
+      font-size: 10px;
+      opacity: 0.88;
+    }
+
+    .gold-menu {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+      gap: 8px;
+      position: relative;
+    }
+
+    .gold-menu button {
+      border: 0;
+      background: transparent;
+      color: #fff2d0;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 8px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+
+    .gold-menu button.active {
+      border-bottom-color: #f8d37d;
+    }
+
+    .menu-overlay {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 12px);
+      transform: translateX(-50%) translateY(8px);
+      width: min(500px, calc(100vw - 36px));
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 230, 170, 0.45);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);
+      background: rgba(35, 20, 8, 0.95);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    }
+
+    .menu-overlay img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .gold-menu button[data-section="vitri"]:hover+.menu-overlay,
+    .gold-menu button[data-section="vitri"]:focus-visible+.menu-overlay {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.42);
+      color: #dbe7f5;
+      z-index: 6;
+    }
+
+    .status {
+      position: absolute;
+      right: 20px;
+      bottom: 98px;
+      z-index: 4;
+      border-radius: 10px;
+      border: 1px solid var(--panel-border);
+      background: var(--panel-bg);
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    .zone-hotspots {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: none;
+      pointer-events: auto;
+    }
+
+    .zone-click-layer {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .zone-dimmer {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .zone-dimmer.active {
+      opacity: 1;
+    }
+
+    .zone-debug-buttons {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+    }
+
+    .zone-hotspot-debug {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 238, 170, 0.95);
+      background: rgba(188, 124, 40, 0.9);
+      color: #fff8de;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 0 0 0 rgba(255, 210, 125, 0.55);
+      cursor: pointer;
+      pointer-events: auto;
+      animation: hotspotPulse 1.8s infinite;
+    }
+
+    @keyframes hotspotPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 210, 125, 0.55);
+      }
+
+      70% {
+        box-shadow: 0 0 0 16px rgba(255, 210, 125, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 210, 125, 0);
+      }
+    }
+
+    .zone-led {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 4;
+      filter: drop-shadow(0 0 8px rgba(255, 227, 134, 0.7));
+      transition: opacity 0.2s ease;
+    }
+
+    .zone-led.active {
+      opacity: 1;
+    }
+
+    .zone-info-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 1%;
+      box-sizing: border-box;
+      opacity: 0;
+      transform-origin: top center;
+      transform: scale(1.015);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .zone-info-overlay.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .zone-info-sprite {
+      position: relative;
+      width: 50%;
+      height: 50%;
+      background-repeat: no-repeat;
+      background-size: 300% 400%;
+      background-position: 0% 0%;
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.65));
+    }
+
+    @media (max-width: 860px) {
+      .zone-info-sprite {
+        width: 98%;
+        height: 89%;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hint {
+        display: none;
+      }
+
+      .gold-nav {
+        border-radius: 16px;
+        padding: 10px;
+        display: block;
+      }
+
+      .menu-overlay {
+        bottom: calc(100% + 8px);
+        width: calc(100vw - 24px);
+      }
+
+      .gold-brand {
+        margin-bottom: 8px;
+        min-width: 0;
+      }
+
+      .gold-menu {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .gold-menu button {
+        font-size: 14px;
+        padding: 6px 4px;
+      }
+
+      .status {
+        right: 10px;
+        bottom: 110px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <main class="tour">
+    <div class="viewer" id="viewer">
+      <img id="frame1" alt="Tong quan 360 frame 1" />
+      <img id="frame2" alt="Tong quan 360 frame 2" />
+    </div>
+
+    <div class="zone-hotspots" id="zoneHotspots" aria-label="Diem click phan khu">
+      <div class="zone-click-layer" id="zoneClickLayer" aria-label="Vung click phan khu"></div>
+      <div class="zone-dimmer" id="zoneDimmer" aria-hidden="true"></div>
+      <div class="zone-led" data-zone-led="khu325"></div>
+      <div class="zone-led" data-zone-led="khu217"></div>
+      <div class="zone-led" data-zone-led="khu337"></div>
+      <div class="zone-led" data-zone-led="khu101"></div>
+      <div class="zone-info-overlay" id="zoneInfo325" aria-hidden="true">
+        <div class="zone-info-sprite" id="zoneInfo325Sprite" aria-label="Thong tin khu 325"></div>
+      </div>
+      <div class="zone-s1-overlay" id="zoneS1Overlay" aria-hidden="true">
+        <div class="zone-s1-info" id="zoneS1InfoSprite" aria-label="Thong tin khu S1"></div>
+        <div class="zone-s1-map" id="zoneS1MapSprite" aria-label="Ban do khu S1"></div>
+      </div>
+      <div class="zone-debug-buttons" id="zoneDebugButtons" aria-label="Nut debug phan khu"></div>
+    </div>
+
+    <section class="maunha-overlay" id="maunhaOverlay" aria-hidden="true">
+      <div class="maunha-background"></div>
+      <div class="maunha-shade"></div>
+      <div class="maunha-panel left">
+        <div class="maunha-panel-header">
+          Mẫu nhà
+          <button class="maunha-panel-close" type="button" data-maunha-close aria-label="Dong Mẫu nhà">×</button>
+        </div>
+        <div class="maunha-panel-body">
+          <button class="maunha-option left-option active" type="button" data-maunha-model="parkhouse">PARK
+            HOUSE</button>
+          <button class="maunha-option left-option" type="button" data-maunha-model="boulevard-shop">BOULEVARD
+            SHOP</button>
+          <button class="maunha-option left-option" type="button" data-maunha-model="waterfront-mansion">WATERFRONT
+            MANSION</button>
+          <button class="maunha-option left-option" type="button" data-maunha-model="duo-mansion">DUO MANSION</button>
+          <button class="maunha-option left-option" type="button" data-maunha-model="outlet-center">TRUNG TÂM
+            OUTLET</button>
+        </div>
+      </div>
+
+      <div class="maunha-center">
+        <div class="maunha-hero" id="maunhaHero"></div>
+      </div>
+
+      <div class="maunha-panel right">
+        <div class="maunha-panel-header">Mặt bằng</div>
+        <div class="maunha-panel-body">
+          <button class="maunha-option right-option active" type="button" data-maunha-floor="1">MẶT BẰNG TẦNG 1</button>
+          <button class="maunha-option right-option" type="button" data-maunha-floor="2">MẶT BẰNG TẦNG 2</button>
+          <button class="maunha-option right-option" type="button" data-maunha-floor="3">MẶT BẰNG TẦNG 3</button>
+          <button class="maunha-option right-option" type="button" data-maunha-floor="4">MẶT BẰNG TẦNG 4</button>
+        </div>
+      </div>
+
+      <!-- Mặt bằng lightbox -->
+      <div class="matbang-lightbox" id="matbangLightbox" aria-modal="true" role="dialog" aria-label="Mat bang">
+        <div class="matbang-box">
+          <button class="matbang-close" id="matbangClose" type="button" aria-label="Dong mat bang">×</button>
+          <img id="matbangImg" src="" alt="Mat bang tang" />
+        </div>
+      </div>
+    </section>
+
+    <header class="topbar">
+
+      <div class="controls" aria-label="Viewer controls">
+        <button class="btn" type="button" data-action="zoom-in">+</button>
+        <button class="btn" type="button" data-action="zoom-out">-</button>
+        <button class="btn" type="button" data-action="reset">&#8635;</button>
+      </div>
+    </header>
+
+    <div class="hint">Giữ chuột trái và kéo ngang để quay 360</div>
+
+
+
+    <nav class="gold-nav" aria-label="Main sections">
+      <div class="gold-brand">
+        <strong>GOLD COAST</strong>
+        <span>VUNG TAU</span>
+      </div>
+      <div class="gold-menu">
+        <button class="active" type="button" data-section="tongquan">Tổng quan</button>
+        <button type="button" data-section="vitri">Vị trí</button>
+        <div class="menu-overlay" aria-hidden="true">
+          <img src="media/res_96C65BF4_E7A5_12F5_41E6_50EA073AAEF5_0.avif" alt="" />
+        </div>
+        <button type="button" data-section="phankhu">Phân khu</button>
+        <button type="button" data-s1="1">Phân khu S1 Limassol</button>
+        <button type="button" data-section="maunha">Mẫu nhà</button>
+      </div>
+    </nav>
+
+    <div class="status" id="status">Frame: 0</div>
+    <div class="loading" id="loading">Dang tai anh Tong Quan...</div>
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>
