@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Long Dien - Tong Quan 360</title>
+  <title>Long Dien - Future Investments</title>
   <style>
     :root {
       --panel-bg: rgba(10, 24, 36, 0.58);
@@ -46,6 +46,41 @@
 
     .zone-s1-overlay.active {
       opacity: 1;
+    }
+
+    .s1-action-btns {
+      position: absolute;
+      bottom: 101px;
+      left: 62%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 16px;
+      z-index: 7;
+      pointer-events: auto;
+    }
+
+    .s1-action-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 32px;
+      font-family: "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 700;
+      background: linear-gradient(180deg, #f3c46e 0%, #d9902a 100%);
+      color: #fff8e7;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .s1-action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .s1-action-btn:active {
+      transform: translateY(0);
     }
 
     .maunha-overlay {
@@ -709,6 +744,10 @@
       <div class="zone-s1-overlay" id="zoneS1Overlay" aria-hidden="true">
         <div class="zone-s1-info" id="zoneS1InfoSprite" aria-label="Thong tin khu S1"></div>
         <div class="zone-s1-map" id="zoneS1MapSprite" aria-label="Ban do khu S1"></div>
+        <div class="s1-action-btns">
+          <button class="s1-action-btn" type="button" id="s1BtnTienIch">Tiện ích</button>
+          <button class="s1-action-btn" type="button" id="s1BtnView360">View 360</button>
+        </div>
       </div>
       <div class="zone-debug-buttons" id="zoneDebugButtons" aria-label="Nut debug phan khu"></div>
     </div>
@@ -751,7 +790,7 @@
       <!-- Mặt bằng lightbox -->
       <div class="matbang-lightbox" id="matbangLightbox" aria-modal="true" role="dialog" aria-label="Mat bang">
         <div class="matbang-box">
-          <button class="matbang-close" id="matbangClose" type="button" aria-label="Dong mat bang">×</button>
+          <button class="matbang-close" id="matbangClose" type="button" aria-label="Dong mat bang">&times;</button>
           <img id="matbangImg" src="" alt="Mat bang tang" />
         </div>
       </div>
@@ -789,6 +828,7 @@
 
     <div class="status" id="status">Frame: 0</div>
     <div class="loading" id="loading">Dang tai anh Tong Quan...</div>
+
   </main>
 
   <script src="script.js" defer></script>
