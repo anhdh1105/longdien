@@ -949,7 +949,7 @@
   const s1BtnView360 = document.getElementById("s1BtnView360");
   if (s1BtnView360) {
     s1BtnView360.addEventListener("click", () => {
-      if (status) status.textContent = "Dang xem: S1 View 360 (Can cap nhat anh)";
+      if (status) status.textContent = "...";
     });
   }
 
