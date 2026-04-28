@@ -247,12 +247,12 @@
     .matbang-lightbox {
       position: absolute;
       inset: 0;
-      z-index: 10;
+      z-index: 2;
       display: none;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
     }
 
     .matbang-lightbox.active {
@@ -261,40 +261,19 @@
 
     .matbang-box {
       position: relative;
-      max-width: 82vw;
-      max-height: 80vh;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-      background: #fff;
+      max-width: 65vw;
+      max-height: 90vh;
     }
 
     .matbang-box img {
       display: block;
       width: 100%;
-      height: auto;
-      max-height: 80vh;
+      height: 100%;
+      max-height: 90vh;
       object-fit: contain;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
     }
 
-    .matbang-close {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 0;
-      background: rgba(139, 90, 43, 0.85);
-      color: #fff;
-      font-size: 20px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
 
     @media (max-width: 860px) {
       .maunha-panel {
@@ -778,9 +757,12 @@
       </div>
 
       <div class="maunha-panel right">
-        <div class="maunha-panel-header">Mặt bằng</div>
+        <div class="maunha-panel-header">
+          Mặt bằng
+          <button class="maunha-panel-close" id="matbangClose" type="button" aria-label="Dong Mat bang">&times;</button>
+        </div>
         <div class="maunha-panel-body">
-          <button class="maunha-option right-option active" type="button" data-maunha-floor="1">MẶT BẰNG TẦNG 1</button>
+          <button class="maunha-option right-option" type="button" data-maunha-floor="1">MẶT BẰNG TẦNG 1</button>
           <button class="maunha-option right-option" type="button" data-maunha-floor="2">MẶT BẰNG TẦNG 2</button>
           <button class="maunha-option right-option" type="button" data-maunha-floor="3">MẶT BẰNG TẦNG 3</button>
           <button class="maunha-option right-option" type="button" data-maunha-floor="4">MẶT BẰNG TẦNG 4</button>
@@ -790,7 +772,6 @@
       <!-- Mặt bằng lightbox -->
       <div class="matbang-lightbox" id="matbangLightbox" aria-modal="true" role="dialog" aria-label="Mat bang">
         <div class="matbang-box">
-          <button class="matbang-close" id="matbangClose" type="button" aria-label="Dong mat bang">&times;</button>
           <img id="matbangImg" src="" alt="Mat bang tang" />
         </div>
       </div>

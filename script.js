@@ -81,7 +81,7 @@
   let zoneS1Timer = null;
   let s1OverlayVisible = false;
   let maunhaActiveModel = "parkhouse";
-  let maunhaActiveFloor = "1";
+  let maunhaActiveFloor = null;
   const zoneMaskCache = new Map();
   const zoneInfoCfgMap = {
     khu325: {
@@ -875,6 +875,7 @@
 
   maunhaModelButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
+      hideMatBang();
       maunhaActiveModel = btn.getAttribute("data-maunha-model") || "parkhouse";
       setMaunhaActive();
       if (status) status.textContent = `Dang xem mau nha: ${maunhaActiveModel.toUpperCase()}`;
@@ -891,11 +892,15 @@
     if (!src || !matbangLightbox || !matbangImg) return;
     matbangImg.src = src;
     matbangLightbox.classList.add("active");
+    if (matbangClose) matbangClose.style.display = "block";
   }
 
   function hideMatBang() {
     if (matbangLightbox) matbangLightbox.classList.remove("active");
     if (matbangImg) matbangImg.src = "";
+    if (matbangClose) matbangClose.style.display = "none";
+    maunhaActiveFloor = null;
+    setMaunhaActive();
   }
 
   if (matbangClose) matbangClose.addEventListener("click", hideMatBang);
